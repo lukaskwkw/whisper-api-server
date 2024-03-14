@@ -17,6 +17,12 @@ func main() {
 	e := echo.New()
 	e.HideBanner = true
 
+	args, errParsing := resources.ParseFlags()
+	if errParsing != nil {
+		e.Logger.Error("Error parsing flags: ", errParsing)
+		return
+	}
+
 	e.Use(middleware.CORS())
 
 	exePath, errs := os.Executable()
@@ -41,17 +47,7 @@ func main() {
 		l.SetHeader("${time_rfc3339} ${level}")
 	}
 
-	_, err := resources.GetWhisperDll("1.12.0")
-	if err != nil {
-		e.Logger.Error(err)
-	}
-
-	model, err := resources.GetModel("ggml-medium.bin")
-	if err != nil {
-		e.Logger.Error(err)
-	}
-
-	whisperState, err := api.InitializeWhisperState(model)
+	whisperState, err := api.InitializeWhisperState(args.ModelPath, args.Language)
 
 	if err != nil {
 		e.Logger.Error(err)
