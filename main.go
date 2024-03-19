@@ -58,5 +58,5 @@ func main() {
 		return api.Transcribe(c, whisperState)
 	})
 
-	e.Logger.Fatal(e.Start("127.0.0.1:3000"))
+	e.Logger.Fatal(e.Start(fmt.Sprintf("127.0.0.1:%d", args.Port)))
 }
